@@ -1,12 +1,16 @@
-import './search-panel.css';
+import "./search-panel.css";
 
 const SearchPanel = () => {
-    const searchText= 'What needs to be done?';
-   
-    return (
-      <input type='text' className="new-todo" 
-      placeholder = {searchText} autoFocus/>
-    );
-  };
+  const searchText = "What needs to be done?";
 
-  export default SearchPanel;
+  return (
+    <input
+      type="text"
+      className="new-todo form-control search-input"
+      placeholder={searchText}
+      autoFocus
+    />
+  );
+};
+
+export default SearchPanel;
