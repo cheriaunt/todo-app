@@ -3,7 +3,7 @@ import "./task-filter.css";
 const TaskFilter = () => {
   return (
     <ul className="filters d-flex">
-      <li className="filter">
+      <li>
         <button type="button" className="selected btn btn-info">
           All
         </button>
