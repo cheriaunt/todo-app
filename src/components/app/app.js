@@ -14,6 +14,7 @@ export default class App extends Component {
       this.createTodoItem("Make Awesome App"),
       this.createTodoItem("Have a lunch"),
     ],
+    filter: "all", // all,active,done
   };
   createTodoItem(label) {
     return { label, completed: false, editing: false, id: this.maxId++ };
@@ -56,8 +57,24 @@ export default class App extends Component {
     console.log(" Toggle Editing", id);
   };
 
+  filter(items, filter) {
+    switch (filter) {
+      case "all":
+        return items;
+      case "active":
+        return items.filter((item) => !item.completed);
+      case "completed":
+        return items.filter((item) => item.completed);
+      default:
+        return items;
+    }
+  }
+  onFilterChange = (filter) => {
+    this.setState({ filter });
+  };
   render() {
-    const { todoData } = this.state;
+    const { todoData, filter } = this.state;
+    const visibleItems = this.filter(todoData, filter);
     const completedCount = todoData.filter((el) => el.completed).length;
     const todoCount = todoData.length - completedCount;
     return (
@@ -69,13 +86,17 @@ export default class App extends Component {
 
         <section className="main">
           <TaskList
-            todos={todoData}
+            todos={visibleItems}
             onDeleted={this.deleteItem}
             onToggleCompleted={this.onToggleCompleted}
             onToggleEditing={this.onToggleEditing}
           />
         </section>
-        <Footer toDo={todoCount} />
+        <Footer
+          toDo={todoCount}
+          filter={filter}
+          onFilterChange={this.onFilterChange}
+        />
       </section>
     );
   }
