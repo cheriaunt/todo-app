@@ -30,6 +30,11 @@ export default class App extends Component {
       return (state.todoData = newArrDel);
     });
   };
+  deleteAll = () => {
+    this.setState(({ todoData }) => {
+      return { todoData: [] };
+    });
+  };
 
   addItem = (text) => {
     const newItem = this.createTodoItem(text);
@@ -96,6 +101,7 @@ export default class App extends Component {
           toDo={todoCount}
           filter={filter}
           onFilterChange={this.onFilterChange}
+          onDeletedAll={this.deleteAll}
         />
       </section>
     );
