@@ -1,8 +1,31 @@
 import { Component } from "react";
 import { formatDistanceToNow } from "date-fns";
+import PropTypes from "prop-types";
 import "./task.css";
 
 export default class Task extends Component {
+  static defaultProps = {
+    label: "Пример",
+    completed: false,
+    editing: false,
+    id: "4",
+    updateInterval: 60000,
+    onToggleEditing: () => {},
+    onLabelChange: () => {},
+    onKeyChange: () => {},
+  };
+
+  static propTypes = {
+    label: PropTypes.string,
+    completed: PropTypes.bool,
+    editing: PropTypes.bool,
+    id: PropTypes.number,
+    updateInterval: PropTypes.number,
+    onToggleEditing: PropTypes.func,
+    onLabelChange: PropTypes.func,
+    onKeyChange: PropTypes.func,
+  };
+
   state = {
     label: this.props.label,
     date: formatDistanceToNow(this.props.date, {
@@ -21,7 +44,8 @@ export default class Task extends Component {
   };
 
   componentDidMount() {
-    this.timerID = setInterval(() => this.tick(), 1000);
+    const { updateInterval } = this.props;
+    this.timerID = setInterval(() => this.tick(), updateInterval);
   }
 
   componentWillUnmount() {
@@ -42,24 +66,17 @@ export default class Task extends Component {
       label,
       completed,
       editing,
-      date,
       onDeleted,
       onToggleCompleted,
       onToggleEditing,
     } = this.props;
-    // let dateDistance = formatDistanceToNow(date, {
-    //   addSuffix: true,
-    // });
-    // let classNames = "view";
+
     let classNames = "v";
-    // let status = "Active";
     if (completed) {
       classNames += " completed";
-      // status = "Completed";
     }
     if (editing) {
       classNames += " editing";
-      // status = "Editing";
     }
 
     return (

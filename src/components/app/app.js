@@ -7,6 +7,7 @@ import "./app.css";
 
 export default class App extends Component {
   maxId = 100;
+  updateInterval = 60000;
 
   state = {
     todoData: [
@@ -122,7 +123,6 @@ export default class App extends Component {
             onDeleted={this.deleteItem}
             onToggleCompleted={this.onToggleCompleted}
             onToggleEditing={this.onToggleEditing}
-            setUpdate={this.setUpdate}
           />
         </section>
         <Footer

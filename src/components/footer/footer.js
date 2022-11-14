@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import TaskFilter from "../task-filter";
 import "./footer.css";
 
@@ -11,6 +12,15 @@ const Footer = ({ toDo, filter, onFilterChange, onDeletedAll }) => {
       </button>
     </footer>
   );
+};
+Footer.defaultProps = {
+  toDo: 0,
+  onDeletedAll: () => {},
+};
+
+Footer.propTypes = {
+  toDo: PropTypes.number,
+  onDeletedAll: PropTypes.func,
 };
 
 export default Footer;
