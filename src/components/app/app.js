@@ -49,17 +49,38 @@ export default class App extends Component {
       const idx = todoData.findIndex((el) => el.id === id);
       const oldItem = todoData[idx];
       const newItem = { ...oldItem, completed: !oldItem.completed };
-      const NewArrDone = [
+      const newArrDone = [
         ...todoData.slice(0, idx),
         newItem,
         ...todoData.slice(idx + 1),
       ];
-      return { todoData: NewArrDone };
+      return { todoData: newArrDone };
     });
   };
 
-  onToggleEditing = (id) => {
-    console.log(" Toggle Editing", id);
+  setUpdate = (text, id) => {
+    this.setState({
+      todoData: this.state.todoData.map((todo) => {
+        if (todo.id === id) {
+          todo.label = text;
+        }
+        return todo;
+      }),
+    });
+  };
+
+  onToggleEditing = (id, label) => {
+    this.setState(({ todoData }) => {
+      const idx = todoData.findIndex((el) => el.id === id);
+      const oldItem = todoData[idx];
+      const newItem = { ...oldItem, label, editing: !oldItem.editing };
+      const newArrEdit = [
+        ...todoData.slice(0, idx),
+        newItem,
+        ...todoData.slice(idx + 1),
+      ];
+      return { todoData: newArrEdit };
+    });
   };
 
   filter(items, filter) {
@@ -95,6 +116,7 @@ export default class App extends Component {
             onDeleted={this.deleteItem}
             onToggleCompleted={this.onToggleCompleted}
             onToggleEditing={this.onToggleEditing}
+            setUpdate={this.setUpdate}
           />
         </section>
         <Footer

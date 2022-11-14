@@ -24,7 +24,7 @@ button::-moz-focus-inner {
 	border: none;
 }
 
-.body {
+body {
 	font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	line-height: 1.4em;
 	background: #f5f5f5;
@@ -46,12 +46,13 @@ button::-moz-focus-inner {
 }
 
 .todoapp {
-  background: #fff;
+	background: #fff;
 	margin: 130px 0 40px 0;
 	position: relative;
 	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2),
 	            0 25px 50px 0 rgba(0, 0, 0, 0.1);
 }
+
 h1 {
 	position: absolute;
 	top: -140px;
@@ -65,9 +66,9 @@ h1 {
 	text-rendering: optimizeLegibility;
 }
 .main {
-  position: relative;
-  z-index: 2;
-  border-top: 1px solid #e6e6e6;
+	position: relative;
+	z-index: 2;
+	border-top: 1px solid #e6e6e6;
 }
 
   

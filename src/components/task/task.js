@@ -2,16 +2,22 @@ import { Component } from "react";
 import "./task.css";
 
 export default class Task extends Component {
-  // state = {
-  //   completed: false,
-  // };
-  // onLabelClick = () => {
-  //   this.setState((state) => {
-  //     return { completed: !state.completed };
-  //   });
-  // };
+  state = {
+    label: this.props.label,
+  };
+  onLabelChange = (e) => {
+    this.setState({
+      label: e.target.value,
+    });
+  };
+  onKeyChange = (e) => {
+    if (e.key === "Enter") {
+      this.props.onToggleEditing(this.props.id, this.state.label);
+    }
+  };
   render() {
     const {
+      id,
       label,
       completed,
       editing,
@@ -19,28 +25,44 @@ export default class Task extends Component {
       onToggleCompleted,
       onToggleEditing,
     } = this.props;
-    // const { completed } = this.state;
 
-    let classNames = "view";
-    let status = "Active";
+    // let classNames = "view";
+    let classNames = "v";
+    // let status = "Active";
     if (completed) {
       classNames += " completed";
-      status = "Completed";
+      // status = "Completed";
     }
     if (editing) {
       classNames += " editing";
-      status = "Editing";
+      // status = "Editing";
     }
     return (
       <div className={classNames}>
-        <input className="toggle" type="checkbox" onClick={onToggleCompleted} />
-        <label className="todo-list-item-label">
-          {label}
-          <span className="description"> {status} task </span>
-          <span className="created">created 5 minutes ago</span>
-        </label>
-        <button class="icon icon-edit" onClick={onToggleEditing}></button>
-        <button class="icon icon-destroy" onClick={onDeleted}></button>
+        <div className="view">
+          <input
+            className="toggle"
+            type="checkbox"
+            onChange={onToggleCompleted}
+          />
+          <label>
+            <span className="description">{label} </span>
+            <span className="created">created 5 minutes ago</span>
+          </label>
+
+          <button
+            className="icon icon-edit"
+            onClick={() => onToggleEditing(id, this.state.label)}
+          ></button>
+          <button className="icon icon-destroy" onClick={onDeleted}></button>
+        </div>
+        <input
+          className="edit"
+          type="text"
+          value={this.state.label}
+          onChange={this.onLabelChange}
+          onKeyDown={this.onKeyChange}
+        ></input>
       </div>
     );
   }
