@@ -1,9 +1,13 @@
 import { Component } from "react";
+import { formatDistanceToNow } from "date-fns";
 import "./task.css";
 
 export default class Task extends Component {
   state = {
     label: this.props.label,
+    date: formatDistanceToNow(this.props.date, {
+      addSuffix: true,
+    }),
   };
   onLabelChange = (e) => {
     this.setState({
@@ -15,17 +19,37 @@ export default class Task extends Component {
       this.props.onToggleEditing(this.props.id, this.state.label);
     }
   };
+
+  componentDidMount() {
+    this.timerID = setInterval(() => this.tick(), 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+
+  tick() {
+    this.setState({
+      date: formatDistanceToNow(this.props.date, {
+        addSuffix: true,
+      }),
+    });
+  }
+
   render() {
     const {
       id,
       label,
       completed,
       editing,
+      date,
       onDeleted,
       onToggleCompleted,
       onToggleEditing,
     } = this.props;
-
+    // let dateDistance = formatDistanceToNow(date, {
+    //   addSuffix: true,
+    // });
     // let classNames = "view";
     let classNames = "v";
     // let status = "Active";
@@ -37,6 +61,7 @@ export default class Task extends Component {
       classNames += " editing";
       // status = "Editing";
     }
+
     return (
       <div className={classNames}>
         <div className="view">
@@ -47,7 +72,7 @@ export default class Task extends Component {
           />
           <label>
             <span className="description">{label} </span>
-            <span className="created">created 5 minutes ago</span>
+            <span className="created">created {this.state.date}</span>
           </label>
 
           <button

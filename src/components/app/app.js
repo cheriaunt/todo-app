@@ -17,7 +17,13 @@ export default class App extends Component {
     filter: "all", // all,active,done
   };
   createTodoItem(label) {
-    return { label, completed: false, editing: false, id: this.maxId++ };
+    return {
+      label,
+      completed: false,
+      editing: false,
+      id: this.maxId++,
+      date: new Date(),
+    };
   }
 
   deleteItem = (id) => {
