@@ -9,7 +9,7 @@ export default class Task extends Component {
     completed: false,
     editing: false,
     id: "4",
-    updateInterval: 60000,
+    updateInterval: 10000,
     onToggleEditing: () => {},
     onLabelChange: () => {},
     onKeyChange: () => {},
@@ -29,7 +29,7 @@ export default class Task extends Component {
   state = {
     label: this.props.label,
     date: formatDistanceToNow(this.props.date, {
-      addSuffix: true,
+      includeSeconds: true,
     }),
   };
   onLabelChange = (e) => {

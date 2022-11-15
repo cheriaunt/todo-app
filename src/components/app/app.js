@@ -7,7 +7,7 @@ import "./app.css";
 
 export default class App extends Component {
   maxId = 100;
-  updateInterval = 60000;
+  updateInterval = 10000;
 
   state = {
     todoData: [
