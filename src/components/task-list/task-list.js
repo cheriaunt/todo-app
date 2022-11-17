@@ -1,13 +1,14 @@
-import PropTypes from "prop-types";
-import Task from "../task";
-import "./task-list.css";
+import PropTypes from 'prop-types';
 
-const TaskList = ({ todos, onDeleted, onToggleCompleted, onToggleEditing }) => {
+import Task from '../task';
+import './task-list.css';
+
+function TaskList({ todos, onDeleted, onToggleCompleted, onToggleEditing }) {
   const elements = todos.map((item) => {
     const { id, ...itemProps } = item;
 
     return (
-      <li key={id} className="list-group-item">
+      <li key={id} className='list-group-item'>
         <Task
           id={id}
           {...itemProps}
@@ -18,25 +19,24 @@ const TaskList = ({ todos, onDeleted, onToggleCompleted, onToggleEditing }) => {
       </li>
     );
   });
-  return <ul className="todo-list">{elements}</ul>;
-};
+  return <ul className='todo-list'>{elements}</ul>;
+}
 
 export default TaskList;
-
 TaskList.defaultProps = {
   todos: [
     {
-      label: "Перезагрузите приложение",
+      label: 'Перезагрузите приложение',
       completed: false,
       editing: false,
-      id: "4",
+      id: '4',
     },
   ],
   onToggleCompleted: () => {},
   onDeleted: () => {},
 };
 TaskList.propTypes = {
-  todos: PropTypes.arrayOf(PropTypes.object).isRequired,
+  todos: PropTypes.arrayOf(PropTypes.objectOf),
   onToggleCompleted: PropTypes.func,
   onDeleted: PropTypes.func,
 };

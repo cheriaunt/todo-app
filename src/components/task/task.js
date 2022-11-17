@@ -1,47 +1,28 @@
-import { Component } from "react";
-import { formatDistanceToNow } from "date-fns";
-import PropTypes from "prop-types";
-import "./task.css";
+import { Component } from 'react';
+import { formatDistanceToNow } from 'date-fns';
+import PropTypes from 'prop-types';
+import './task.css';
 
 export default class Task extends Component {
-  static defaultProps = {
-    label: "Пример",
-    completed: false,
-    editing: false,
-    id: "4",
-    updateInterval: 10000,
-    onToggleEditing: () => {},
-    onLabelChange: () => {},
-    onKeyChange: () => {},
-  };
+  constructor(props) {
+    super(props);
 
-  static propTypes = {
-    label: PropTypes.string,
-    completed: PropTypes.bool,
-    editing: PropTypes.bool,
-    id: PropTypes.number,
-    updateInterval: PropTypes.number,
-    onToggleEditing: PropTypes.func,
-    onLabelChange: PropTypes.func,
-    onKeyChange: PropTypes.func,
-  };
+    const { label, date } = props;
 
-  state = {
-    label: this.props.label,
-    date: formatDistanceToNow(this.props.date, {
-      includeSeconds: true,
-    }),
-  };
-  onLabelChange = (e) => {
-    this.setState({
-      label: e.target.value,
-    });
-  };
-  onKeyChange = (e) => {
-    if (e.key === "Enter") {
-      this.props.onToggleEditing(this.props.id, this.state.label);
-    }
-  };
+    this.state = {
+      text: label,
+      date: formatDistanceToNow(date, {
+        includeSeconds: true,
+      }),
+    };
+  }
+
+  // state = {
+  //   label: this.props.label,
+  //   date: formatDistanceToNow(this.props.date, {
+  //     includeSeconds: true,
+  //   }),
+  // };
 
   componentDidMount() {
     const { updateInterval } = this.props;
@@ -52,60 +33,77 @@ export default class Task extends Component {
     clearInterval(this.timerID);
   }
 
-  tick() {
+  onKeyChange = (e) => {
+    const { id, onToggleEditing } = this.props;
+    const { text } = this.state;
+    if (e.key === 'Enter') {
+      onToggleEditing(id, text);
+    }
+  };
+
+  onLabelChange = (e) => {
     this.setState({
-      date: formatDistanceToNow(this.props.date, {
+      text: e.target.value,
+    });
+  };
+
+  tick() {
+    const { date } = this.props;
+    this.setState({
+      date: formatDistanceToNow(date, {
         addSuffix: true,
       }),
     });
   }
 
   render() {
-    const {
-      id,
-      label,
-      completed,
-      editing,
-      onDeleted,
-      onToggleCompleted,
-      onToggleEditing,
-    } = this.props;
+    const { id, label, completed, editing, onDeleted, onToggleCompleted, onToggleEditing } = this.props;
+    const { text, date } = this.state;
 
-    let classNames = "v";
+    let classNames = 'v';
     if (completed) {
-      classNames += " completed";
+      classNames += ' completed';
     }
     if (editing) {
-      classNames += " editing";
+      classNames += ' editing';
     }
 
     return (
       <div className={classNames}>
-        <div className="view">
-          <input
-            className="toggle"
-            type="checkbox"
-            onChange={onToggleCompleted}
-          />
+        <div className='view'>
+          <input className='toggle' type='checkbox' onChange={onToggleCompleted} />
           <label>
-            <span className="description">{label} </span>
-            <span className="created">created {this.state.date}</span>
+            <span className='description'>{label} </span>
+            <span className='created'>created {date}</span>
           </label>
-
           <button
-            className="icon icon-edit"
-            onClick={() => onToggleEditing(id, this.state.label)}
-          ></button>
-          <button className="icon icon-destroy" onClick={onDeleted}></button>
+            type='button'
+            aria-label='button edit'
+            className='icon icon-edit'
+            onClick={() => onToggleEditing(id, text)}
+          />
+          <button type='button' aria-label='button destroy' className='icon icon-destroy' onClick={onDeleted} />
         </div>
-        <input
-          className="edit"
-          type="text"
-          value={this.state.label}
-          onChange={this.onLabelChange}
-          onKeyDown={this.onKeyChange}
-        ></input>
+        <input className='edit' type='text' value={text} onChange={this.onLabelChange} onKeyDown={this.onKeyChange} />
       </div>
     );
   }
 }
+
+Task.defaultProps = {
+  label: 'Пример',
+  completed: false,
+  editing: false,
+  id: '4',
+  updateInterval: 1000,
+  onToggleEditing: () => {},
+};
+
+Task.propTypes = {
+  label: PropTypes.string,
+  completed: PropTypes.bool,
+  editing: PropTypes.bool,
+  id: PropTypes.number,
+  updateInterval: PropTypes.number,
+  onToggleEditing: PropTypes.func,
+};
