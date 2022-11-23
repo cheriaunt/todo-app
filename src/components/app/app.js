@@ -48,18 +48,18 @@ export default class App extends Component {
   };
 
   onfilter(filter) {
-    const {todoData}= this.state;
+    const { todoData } = this.state;
     switch (filter) {
-    case 'all':
-      return todoData;
-    case 'active':
-      return todoData.filter((item) => !item.completed);
-    case 'completed':
-      return todoData.filter((item) => item.completed);
-    default:
-      return todoData;
+      case 'all':
+        return todoData;
+      case 'active':
+        return todoData.filter((item) => !item.completed);
+      case 'completed':
+        return todoData.filter((item) => item.completed);
+      default:
+        return todoData;
     }
-  };
+  }
 
   addItem = (text) => {
     const newItem = this.createTodoItem(text);
@@ -71,6 +71,13 @@ export default class App extends Component {
 
   deleteAll = () => {
     this.setState(({ todoData }) => ({ todoData: [] }));
+  };
+
+  deleteCompleted = () => {
+    this.setState(({ todoData }) => {
+      const newArr = [...todoData.filter((item) => !item.completed)];
+      return { todoData: newArr };
+    });
   };
 
   deleteItem = (id) => {
@@ -112,7 +119,13 @@ export default class App extends Component {
             onToggleEditing={this.onToggleEditing}
           />
         </section>
-        <Footer toDo={todoCount} filter={filter} onFilterChange={this.onFilterChange} onDeletedAll={this.deleteAll} />
+        <Footer
+          toDo={todoCount}
+          filter={filter}
+          onFilterChange={this.onFilterChange}
+          onDeletedAll={this.deleteAll}
+          onDeleteCompleted={this.deleteCompleted}
+        />
       </section>
     );
   }
