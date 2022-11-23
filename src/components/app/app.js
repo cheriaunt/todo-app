@@ -69,10 +69,6 @@ export default class App extends Component {
     });
   };
 
-  deleteAll = () => {
-    this.setState(({ todoData }) => ({ todoData: [] }));
-  };
-
   deleteCompleted = () => {
     this.setState(({ todoData }) => {
       const newArr = [...todoData.filter((item) => !item.completed)];
@@ -118,14 +114,13 @@ export default class App extends Component {
             onToggleCompleted={this.onToggleCompleted}
             onToggleEditing={this.onToggleEditing}
           />
+          <Footer
+            toDo={todoCount}
+            filter={filter}
+            onFilterChange={this.onFilterChange}
+            onDeleteCompleted={this.deleteCompleted}
+          />
         </section>
-        <Footer
-          toDo={todoCount}
-          filter={filter}
-          onFilterChange={this.onFilterChange}
-          onDeletedAll={this.deleteAll}
-          onDeleteCompleted={this.deleteCompleted}
-        />
       </section>
     );
   }

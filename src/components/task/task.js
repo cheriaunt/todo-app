@@ -71,7 +71,7 @@ export default class Task extends Component {
     return (
       <div className={classNames}>
         <div className='view'>
-          <input className='toggle' type='checkbox' onChange={onToggleCompleted} />
+          <input className='toggle' type='checkbox' onChange={onToggleCompleted} checked={completed}/>
           <label>
             <span className='description'>{label} </span>
             <span className='created'>created {date}</span>

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import TaskFilter from '../task-filter';
 import './footer.css';
 
-function Footer({ toDo, filter, onFilterChange, onDeletedAll, onDeleteCompleted }) {
+function Footer({ toDo, filter, onFilterChange,onDeleteCompleted }) {
   return (
     <footer className='footer'>
       <span className='todo-count'>{toDo} items left</span>
@@ -16,12 +16,12 @@ function Footer({ toDo, filter, onFilterChange, onDeletedAll, onDeleteCompleted 
 }
 Footer.defaultProps = {
   toDo: 0,
-  onDeletedAll: () => {},
+  onDeleteCompleted: () => {},
 };
 
 Footer.propTypes = {
   toDo: PropTypes.number,
-  onDeletedAll: PropTypes.func,
+  onDeleteCompleted: PropTypes.func,
 };
 
 export default Footer;
