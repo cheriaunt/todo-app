@@ -50,14 +50,14 @@ export default class App extends Component {
   onfilter(filter) {
     const { todoData } = this.state;
     switch (filter) {
-      case 'all':
-        return todoData;
-      case 'active':
-        return todoData.filter((item) => !item.completed);
-      case 'completed':
-        return todoData.filter((item) => item.completed);
-      default:
-        return todoData;
+    case 'all':
+      return todoData;
+    case 'active':
+      return todoData.filter((item) => !item.completed);
+    case 'completed':
+      return todoData.filter((item) => item.completed);
+    default:
+      return todoData;
     }
   }
 
