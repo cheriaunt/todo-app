@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import './task.css';
 
 export default class Task extends Component {
+  
   constructor(props) {
     super(props);
 
@@ -17,28 +18,48 @@ export default class Task extends Component {
     };
   }
 
-  // state = {
-  //   label: this.props.label,
-  //   date: formatDistanceToNow(this.props.date, {
-  //     includeSeconds: true,
-  //   }),
-  // };
-
   componentDidMount() {
     const { updateInterval } = this.props;
+    const { started, seconds, tickTimer } = this.props;
     this.timerID = setInterval(() => this.tick(), updateInterval);
+    if (started) {
+      this.interval = setInterval(() => tickTimer(), 1000);
+    } else {
+      clearInterval(this.interval);
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { started, tickTimer } = this.props;
+    if (!started){
+      clearInterval(this.interval);
+    } 
+    if (started !== prevProps.started ) {
+      this.interval = setInterval(() => tickTimer(), 1000);
+    }
+    
+    
   }
 
   componentWillUnmount() {
     clearInterval(this.timerID);
+    clearInterval(this.interval);
   }
 
   onKeyChange = (e) => {
-    const { id, onToggleEditing } = this.props;
+    const { id, label , onToggleEditing } = this.props;
     const { text } = this.state;
     if (e.key === 'Enter') {
-      onToggleEditing(id, text);
+      if(text !== ''){
+        onToggleEditing(id, text);
+      } else {
+        onToggleEditing(id, label); 
+        this.setState({
+          text: label,
+        });
+      }
     }
+    
   };
 
   onLabelChange = (e) => {
@@ -57,8 +78,10 @@ export default class Task extends Component {
   }
 
   render() {
-    const { id, label, completed, editing, onDeleted, onToggleCompleted, onToggleEditing } = this.props;
+    const { id, label, minutes, seconds, completed, editing, onDeleted, onToggleCompleted, onToggleEditing, getPlay, getPause } = this.props;
     const { text, date } = this.state;
+    const s = seconds.toString().padStart(2, '0');
+    const m = minutes.toString().padStart(2, '0');
 
     let classNames = 'v';
     if (completed) {
@@ -73,8 +96,13 @@ export default class Task extends Component {
         <div className='view'>
           <input className='toggle' type='checkbox' onChange={onToggleCompleted} checked={completed}/>
           <label>
-            <span className='description'>{label} </span>
-            <span className='created'>created {date}</span>
+            <span className="title">{label}</span>
+            <span className='description'>
+              <button type='button' aria-label='button play' className="icon icon-play" onClick={getPlay} />
+              <button type='button' aria-label='button pause' className="icon icon-pause" onClick={getPause}/>
+              {m}:{s}
+            </span>
+            <span className='description'>created {date}</span>
           </label>
           <button
             type='button'
@@ -91,7 +119,7 @@ export default class Task extends Component {
 }
 
 Task.defaultProps = {
-  label: 'Пример',
+  label: 'Ошибка',
   completed: false,
   editing: false,
   id: '4',
