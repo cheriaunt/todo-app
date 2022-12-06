@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { Component } from 'react';
 
 import NewTaskForm from '../new-task-form';
@@ -14,9 +15,9 @@ export default class App extends Component {
 
     this.state = {
       todoData: [
-        this.createTodoItem('Drink Coffee'),
-        this.createTodoItem('Make Awesome App'),
-        this.createTodoItem('Have a lunch'),
+        this.createTodoItem('Drink Coffee', 15 , 15),
+        this.createTodoItem('Make Awesome App', 10 , 10),
+        this.createTodoItem('Have a lunch', 5 , 5),
       ],
       filter: 'all', // all,active,done
       updateInterval: 1000,
@@ -61,8 +62,8 @@ export default class App extends Component {
     }
   }
 
-  addItem = (text) => {
-    const newItem = this.createTodoItem(text);
+  addItem = (text, minutes, seconds) => {
+    const newItem = this.createTodoItem(text, minutes, seconds);
     this.setState(({ todoData }) => {
       const NewArrAdd = [...todoData, newItem];
       return { todoData: NewArrAdd };
@@ -84,15 +85,60 @@ export default class App extends Component {
     });
   };
 
-  createTodoItem(label) {
+  getPlay = (id) => {
+    this.setState(({ todoData }) => ({
+      todoData: todoData.map((el) => {
+        if (el.id === id) {
+          el.started = true;
+        }
+        return el;
+      }),
+    }));
+  };
+
+  getPause = (id) => {
+    this.setState(({ todoData }) => ({
+      todoData: todoData.map((el) => {
+        if (el.id === id) {
+          el.started = false;
+        }
+        return el;
+      }),
+    }));
+  };
+
+  tickTimer = (id) => {
+    this.setState(({ todoData }) => 
+      ({todoData: todoData.map((el) => {
+        if (el.id === id ) {
+          if (el.seconds > 0) {
+            el.seconds -= 1;
+          } else if (el.minutes > 0) {
+            el.minutes -= 1;
+            el.seconds += 59;
+          } else if (Number(el.minutes) === 0 && Number(el.seconds) === 0) {
+            el.started = false;
+          }
+        };
+        return el;
+      }),
+      })
+    );
+  };
+
+  createTodoItem(label, min,sec) {
     return {
       label,
       completed: false,
       editing: false,
       id: this.maxId++,
       date: new Date(),
-    };
-  }
+      minutes: min,
+      seconds: sec,
+      started: true,
+    };     
+  };
+
 
   render() {
     const { todoData, filter, updateInterval } = this.state;
@@ -113,6 +159,9 @@ export default class App extends Component {
             onDeleted={this.deleteItem}
             onToggleCompleted={this.onToggleCompleted}
             onToggleEditing={this.onToggleEditing}
+            getPause={this.getPause}
+            getPlay={this.getPlay}
+            tickTimer={this.tickTimer}
           />
           <Footer
             toDo={todoCount}
