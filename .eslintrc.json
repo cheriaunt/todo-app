@@ -31,6 +31,7 @@
         "react/prop-types": 0,
         "no-unused-vars": 0, 
         "jsx-a11y/label-has-associated-control": 0,
+        "react/function-component-definition" :[2, { "namedComponents": "arrow-function" }],
         "react/jsx-props-no-spreading": 0,
         "import/no-unresolved": [2, { "caseSensitive": false }],
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],

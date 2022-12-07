@@ -1,122 +1,82 @@
-import { Component } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
 import { formatDistanceToNow } from 'date-fns';
 import PropTypes from 'prop-types';
+import { useEffect, useState, useRef } from 'react';
+
 import './task.css';
 
-export default class Task extends Component {
+const Task = ({date, started, updateInterval, tickTimer, id, label, minutes, seconds, completed, editing, onDeleted, onToggleCompleted, onToggleEditing, getPlay, getPause}) => {
   
-  constructor(props) {
-    super(props);
+  const [dateTime, setDate] = useState(formatDistanceToNow(date, {includeSeconds: true,}));
+  
+  const timerRef = useRef();
 
-    const { label, date } = props;
+  const  tick= ()=> {
+    setDate(formatDistanceToNow(date, {
+      addSuffix: true,
+    }));
+   
+  };
+  
+  useEffect(()=> {
+    timerRef.current = setInterval(() => tick(), updateInterval);
+    return ()=>clearInterval(timerRef.current);
+  });
 
-    this.state = {
-      text: label,
-      date: formatDistanceToNow(date, {
-        includeSeconds: true,
-      }),
-    };
-  }
+  const [text, setText] = useState(label);
 
-  componentDidMount() {
-    const { updateInterval } = this.props;
-    const { started, seconds, tickTimer } = this.props;
-    this.timerID = setInterval(() => this.tick(), updateInterval);
-    if (started) {
-      this.interval = setInterval(() => tickTimer(), 1000);
-    } else {
-      clearInterval(this.interval);
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    const { started, tickTimer } = this.props;
-    if (!started){
-      clearInterval(this.interval);
-    } 
-    if (started !== prevProps.started ) {
-      this.interval = setInterval(() => tickTimer(), 1000);
-    }
-    
-    
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.timerID);
-    clearInterval(this.interval);
-  }
-
-  onKeyChange = (e) => {
-    const { id, label , onToggleEditing } = this.props;
-    const { text } = this.state;
+  const onKeyChange = (e) => {
     if (e.key === 'Enter') {
       if(text !== ''){
         onToggleEditing(id, text);
       } else {
         onToggleEditing(id, label); 
-        this.setState({
-          text: label,
-        });
+        setText(label);
       }
     }
-    
   };
 
-  onLabelChange = (e) => {
-    this.setState({
-      text: e.target.value,
-    });
-  };
+  const onLabelChange = (e) => {
+    setText(e.target.value);
+  }; 
 
-  tick() {
-    const { date } = this.props;
-    this.setState({
-      date: formatDistanceToNow(date, {
-        addSuffix: true,
-      }),
-    });
+  let classNames = 'v';
+  if (completed) {
+    classNames += ' completed';
+  }
+  if (editing) {
+    classNames += ' editing';
   }
 
-  render() {
-    const { id, label, minutes, seconds, completed, editing, onDeleted, onToggleCompleted, onToggleEditing, getPlay, getPause } = this.props;
-    const { text, date } = this.state;
-    const s = seconds.toString().padStart(2, '0');
-    const m = minutes.toString().padStart(2, '0');
-
-    let classNames = 'v';
-    if (completed) {
-      classNames += ' completed';
-    }
-    if (editing) {
-      classNames += ' editing';
-    }
-
-    return (
-      <div className={classNames}>
-        <div className='view'>
-          <input className='toggle' type='checkbox' onChange={onToggleCompleted} checked={completed}/>
-          <label>
-            <span className="title">{label}</span>
-            <span className='description'>
-              <button type='button' aria-label='button play' className="icon icon-play" onClick={getPlay} />
-              <button type='button' aria-label='button pause' className="icon icon-pause" onClick={getPause}/>
-              {m}:{s}
-            </span>
-            <span className='description'>created {date}</span>
-          </label>
-          <button
-            type='button'
-            aria-label='button edit'
-            className='icon icon-edit'
-            onClick={() => onToggleEditing(id, text)}
-          />
-          <button type='button' aria-label='button destroy' className='icon icon-destroy' onClick={onDeleted} />
-        </div>
-        <input className='edit' type='text' value={text} onChange={this.onLabelChange} onKeyDown={this.onKeyChange} />
+  return (
+    <div className={classNames}>
+      <div className='view'>
+        <input className='toggle' type='checkbox' onChange={onToggleCompleted} checked={completed}/>
+        <label>
+          <span className="title">{label}</span>
+          <Timer 
+            id={id}
+            tickTimer={tickTimer}
+            seconds={seconds}
+            minutes={minutes}
+            isStarted={started}
+            getPa={getPause}
+            getPl={getPlay}/>
+          <span className='description'>created {dateTime}</span>
+        </label>
+        <button
+          type='button'
+          aria-label='button edit'
+          className='icon icon-edit'
+          onClick={() => onToggleEditing(id, text)}
+        />
+        <button type='button' aria-label='button destroy' className='icon icon-destroy' onClick={onDeleted} />
       </div>
-    );
-  }
-}
+      <input className='edit' type='text' value={text} onChange={onLabelChange} onKeyDown={onKeyChange} />
+    </div>
+  );
+  
+};
 
 Task.defaultProps = {
   label: 'Ошибка',
@@ -134,4 +94,38 @@ Task.propTypes = {
   id: PropTypes.number,
   updateInterval: PropTypes.number,
   onToggleEditing: PropTypes.func,
+};
+
+export default Task;
+
+const Timer = ({id,tickTimer, seconds, minutes, isStarted,getPa, getPl})=>{
+  const s = seconds.toString().padStart(2, '0');
+  const m = minutes.toString().padStart(2, '0');
+  const [started, setStarted] = useState(isStarted);
+
+  const intervalRef = useRef();
+  const getPlay = (idx) => {
+    setStarted(true);
+    getPl(idx);
+
+    return  ()=>clearInterval(intervalRef.current);
+  };
+
+  const getPause = (idx) => {
+    setStarted(false);
+    getPa(idx);
+    return  ()=>clearInterval(intervalRef.current);
+  };
+
+  useEffect(() => {
+    intervalRef.current = setInterval(() => (started && tickTimer()), 1000);
+    
+    return  ()=>clearInterval(intervalRef.current);
+  }, [started]);
+  return(
+    <span className='description'>
+      <button type='button' aria-label='button play' className="icon icon-play" onClick={()=>getPlay(id)} />
+      <button type='button' aria-label='button pause' className="icon icon-pause" onClick={()=>getPause(id)}/>
+      {m}:{s}
+    </span>);
 };

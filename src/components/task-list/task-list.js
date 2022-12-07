@@ -1,31 +1,35 @@
 import PropTypes from 'prop-types';
+import { useState } from 'react';
 
 import Task from '../task';
 import './task-list.css';
 
-function TaskList({ todos, onDeleted, onToggleCompleted, onToggleEditing, getPlay, getPause, tickTimer }) {
+const TaskList = ({ todos,  onDeleted, onToggleCompleted, onToggleEditing, tickTimer, getPause, getPlay }) => {
+  
+  
   const elements = todos.map((item) => {
-    const { id, label, started, ...itemProps } = item;
-
+    const { id, label, date, started, ...itemProps } = item;
+   
     return (
       <li key={id} className='list-group-item'>
         <Task
           id={id}
           label={label}
+          date={date}
           started={started}
           {...itemProps}
           onDeleted={() => onDeleted(id)}
           onToggleCompleted={() => onToggleCompleted(id)}
           onToggleEditing={onToggleEditing}
-          getPlay={() => getPlay(id)}
-          getPause={() => getPause(id)}
           tickTimer={() => tickTimer(id)}
+          getPlay={getPlay}
+          getPause={getPause}
         />
       </li>
     );
   });
   return <ul className='todo-list'>{elements}</ul>;
-}
+};
 
 export default TaskList;
 TaskList.defaultProps = {
